@@ -1,3 +1,4 @@
+"use strict";
 
 const DEBUG = false;
 
@@ -7,12 +8,17 @@ const DISPLAY = {
     "2": "[}oo{]",
     "3": [" \\ | / ", 
           "--[X]--",
-          " / | \\ "]
+          " / | \\ "],
+    "4": ["   \\/   ",
+          "|°  °|",
+          "(\"\"\"\")",
+          " \"\"\"\" "]
 }
 
-const SPEED = 0.1;
+const SPEED = 0.1 / 1.2;
+const HEIGHT = 14;
 
-const HEIGHT = 12;
+const SHOOT_DELAY = 400;
 
 const PARTICLES = "@#$*%§&";
 const NB_PARTICLES = 20;
@@ -21,13 +27,15 @@ const PV = {
     "0": 2,
     "1": 3,
     "2": 4,
-    "3": 1
+    "3": 1,
+    "4": 100
 };
 const POINTS = {
     "0": 200,
     "1": 300,
     "2": 400,
-    "3": 100
+    "3": 100,
+    "4": 20000
 };
 
 const audio = new Audio();
@@ -76,6 +84,7 @@ export class Enemies {
             this.enemies[i].render();
         }
         this.ctx.fillStyle = "lightblue";
+        this.ctx.font = `${HEIGHT}px Courier New`;
         for (let i=0; i < this.bullets.length; i++) {
             this.ctx.fillText(this.bullets[i].display, this.bullets[i].x, this.bullets[i].y);
         }
@@ -121,13 +130,27 @@ export class Enemy {
         this.ctx = ctx;
         this.speed = SPEED;
         this.vecX = 0;
-        this.vecY = 0;
+        this.vecY = 1;
         this.state = 0;
         this.particles = null;
         this.display = DISPLAY[type];
         this.delay = 0;
+        this.setSize(HEIGHT);
         this.pv = PV[type];
         this.pts = POINTS[type];
+        if (this.type == 3) {
+            this.onExplosion = function() {
+                return [ newShoot(this.x, this.y, -1, 1, 0.4, '/'), 
+                        newShoot(this.x, this.y, 0, 1, 0.4, '|'), 
+                        newShoot(this.x, this.y, 1, 1, 0.4, '\\') ];
+            }
+        }
+    }
+
+    setSize(s) {
+        this.size = s;
+        this.width = (this.display instanceof Array) ? this.display[0].length * this.size * 0.4 : this.display.length * this.size * 0.4 ;
+        this.height = (this.display instanceof Array) ? this.display.length * this.size : this.size;
     }
 
     update(delta) {
@@ -142,6 +165,9 @@ export class Enemy {
                 else {
                     this.delay -= delta;
                 }
+            }
+            if (this.onUpdate) {
+                this.onUpdate();
             }
         }
         else {
@@ -163,7 +189,7 @@ export class Enemy {
     }
 
     render() {
-        this.ctx.font = `${HEIGHT}px Courier`;
+        this.ctx.font = `${this.size}px Courier New`;
         if (this.particles) {
             this.ctx.fillStyle = "red";
             for (let i=0; i < this.particles.length; i++) {
@@ -173,18 +199,24 @@ export class Enemy {
             } 
             return;
         }
+        if (this.y < -this.height) {
+            return;
+        }
+
+        let [x, y, w, h] = this.getBoundingRect();   
+        this.ctx.clearRect(x, y, w, h);
+
         this.ctx.fillStyle = "lightblue";
         if (this.display instanceof Array) {
             let l = this.display.length;
             for (let i=0; i < l; i++) {
-                this.ctx.fillText(this.display[i], this.x, this.y - (l - 1 - i) * HEIGHT);    
+                this.ctx.fillText(this.display[i], this.x, this.y - (l - 1 - i) * this.size);    
             }
         }
         else {
             this.ctx.fillText(this.display, this.x, this.y);
         }
         if (DEBUG) {
-            let [x, y, w, h] = this.getBoundingRect();   
             this.ctx.strokeRect(x, y, w, h);
         }
     }
@@ -209,14 +241,11 @@ export class Enemy {
 
 
     getBoundingRect() {
-        if (this.display instanceof Array) {
-            return [this.x - this.display[0].length*HEIGHT*0.2, this.y - this.display.length * HEIGHT, this.display[0].length*HEIGHT*0.4, this.display.length*HEIGHT];
-        }
-        return [this.x - this.display.length*HEIGHT*0.2, this.y - HEIGHT, this.display.length*HEIGHT*0.4, HEIGHT];
+        return [this.x - this.width / 2, this.y - this.height, this.width, this.height];
     }
 
     isOut() {
-        return this.x < 0 || /* this.y < 0 ||*/ this.y > this.ctx.height + this.getBoundingRect()[3] || this.x > this.ctx.width;
+        return this.y > this.ctx.height + this.height;
     }
     isDestroyed() {
         return this.state < 0;

@@ -135,7 +135,7 @@ h4[data-score] {
 	padding-left: 20vh;
 }
 h4:after {
-	content: attr(data-score);
+	content: attr(data-score) ' (' attr(data-percentage) '%)';
 }
 
 p {

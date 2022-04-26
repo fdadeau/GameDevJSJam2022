@@ -1,5 +1,6 @@
+"use strict";
 
-const DEBUG = true;
+const DEBUG = false;
 
 const DISPLAY = {
     "0": "[0]",
@@ -49,9 +50,13 @@ export class Bonuses {
     }
 
     render() {
+        
         this.ctx.font = `${HEIGHT}px Courier`;
         this.ctx.fillStyle = "lightgreen";
         for (let i=0; i < this.bonuses.length; i++) {
+            if (this.bonuses[i].y < -this.ctx.height/4) {
+                continue;
+            }    
             this.ctx.fillText(this.bonuses[i].display, this.bonuses[i].x, this.bonuses[i].y);
             if (DEBUG) {
                 let [x, y, w, h] = this.getBoundingRect(i);   

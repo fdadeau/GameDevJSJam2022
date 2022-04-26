@@ -12,7 +12,7 @@ export class Background {
                 y: Math.random() * ctx.height | 0, 
                 vecX: 0, 
                 vecY: 1, 
-                speed: (Math.random() * 2 + 1| 0) / 20, 
+                speed: (Math.random() * 1 + 1| 0) / 20, 
                 size: Math.random() * 18  + 2 | 0
             };
         }
@@ -47,5 +47,5 @@ function reset(star, width) {
     star.size = Math.random() * 18  + 2 | 0;
     star.vecX = 0;
     star.vecY = 1;
-    star.speed = (Math.random() * 2 + 2 | 0) / 10;
+    star.speed = (Math.random() * 1 + 1 | 0) / 20;
 }

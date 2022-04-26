@@ -1,3 +1,4 @@
+"use strict";
 
 import { Game, KEY } from "./game.js";
 
@@ -33,7 +34,13 @@ document.addEventListener("DOMContentLoaded", async function() {
     // Game instance
     let game = new Game(context);
 
-    document.querySelector("h4[data-score]").dataset.score = localStorage.getItem(KEY);
+    let h4 = document.querySelector("h4[data-score]");
+    if (h4) {
+        let score = localStorage.getItem(KEY);
+        h4.dataset.score = score;
+        h4.dataset.percentage = (Number(score) / game.max) * 100 | 0;
+        document.querySelector("#score").dataset.max = game.max;
+    }
 
 
     // Game loop
