@@ -15,7 +15,7 @@ const DISPLAY = {
           " \"\"\"\" "]
 }
 
-const SPEED = 0.1 / 1.2;
+const SPEED = 0.1;
 const HEIGHT = 14;
 
 const SHOOT_DELAY = 400;

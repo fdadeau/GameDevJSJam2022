@@ -17,7 +17,7 @@ export class Player {
         this.ctx = ctx;
         this.audio = new Audio();
 
-        this.speed = 0.3;
+        this.speed = 0.35;
         // data
         this.text = ["      II      ",
                      "     /  \\     ",

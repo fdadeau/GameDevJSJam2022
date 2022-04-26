@@ -9,7 +9,7 @@ const DISPLAY = {
     "x2": "[x2]",
 }
 
-const SPEED = 0.1 / 1.2;
+const SPEED = 0.1;
 
 const HEIGHT = 15;
 
