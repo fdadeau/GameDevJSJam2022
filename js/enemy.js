@@ -25,10 +25,10 @@ const NB_PARTICLES = 20;
 
 const PV = {
     "0": 2,
-    "1": 3,
-    "2": 4,
+    "1": 2,
+    "2": 3,
     "3": 1,
-    "4": 100
+    "4": 30
 };
 const POINTS = {
     "0": 200,
@@ -138,7 +138,7 @@ export class Enemy {
         this.setSize(HEIGHT);
         this.pv = PV[type];
         this.pts = POINTS[type];
-        if (this.type == 3) {
+        if (type == 3) {
             this.onExplosion = function() {
                 return [ newShoot(this.x, this.y, -1, 1, 0.4, '/'), 
                         newShoot(this.x, this.y, 0, 1, 0.4, '|'), 

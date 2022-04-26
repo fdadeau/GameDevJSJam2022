@@ -145,10 +145,10 @@ export class Game {
         for (let i=0; i < nb; i++) {
             let x = (i+1) * this.ctx.width / (nb+1);
             let en = new Enemy(this.ctx, x, y, type);
-            en.setSize(20);
             let middle = (nb-1) / 2;
             en.y = y - Math.abs(i - middle) * en.height * 2;
             if (type != 3) {
+                en.setSize(20);
                 en.shoot = { delay: 700, display: 'o', vecX: 0, vecY: 1, speed: 0.3 };
             }
             this.enemies.addEnemy(en);
@@ -252,7 +252,7 @@ export class Game {
             }
             let bonus = getBonus(i);
             DEBUG && console.log({bonus});
-            this.bonuses.addBonus(this.ctx.width * Math.random() * 0.6 + 0.2 | 0, y, 0, 1, bonus);
+            this.bonuses.addBonus(this.ctx.width * (Math.random() * 0.6 + 0.2) | 0, y, 0, 1, bonus);
             y -= DELTA_Y;
         }
         
@@ -285,6 +285,6 @@ function getAttacks(wave, game) {
 }
 
 function getBonus(i) {
-    const BONUSES = ["0", "1", "2", "x2"];
+    const BONUSES = ["0", "x2", "1", "2", "x2"];
     return BONUSES[i*Number(KEY[KEY.length-1]) % BONUSES.length];
 }
